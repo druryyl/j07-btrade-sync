@@ -11,7 +11,7 @@ namespace j07_btrade_sync.Service
             //  BUILD
             var baseUrl = System.Configuration.ConfigurationManager.AppSettings["btrade-cloud-base-url"];
             var endpoint = $"{baseUrl}/api/SalesPerson";
-            var client = new RestSharp.RestClient(endpoint);
+            RestClient client = new RestSharp.RestClient(endpoint);
             
             //  serialize object cmd to json using System.Text.Json
             var requestBody = System.Text.Json.JsonSerializer.Serialize(new SalesPersonSyncCommand(listSalesPerson));

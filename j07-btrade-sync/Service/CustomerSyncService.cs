@@ -1,9 +1,10 @@
 ﻿using j07_btrade_sync.Model;
 using RestSharp;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
-namespace j07_btrade_sync
+namespace j07_btrade_sync.Service
 {
     public class CustomerSyncService
     {
@@ -19,7 +20,7 @@ namespace j07_btrade_sync
                 .AddJsonBody(requestBody);
             //  EXECUTE
             var response = await client.ExecutePostAsync(req);
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 return (false, response.ErrorMessage);
             }

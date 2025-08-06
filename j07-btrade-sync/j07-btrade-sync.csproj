@@ -82,8 +82,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\KategoriType.cs" />
     <Compile Include="Model\SalesPersonType.cs" />
+    <Compile Include="Model\WilayahType.cs" />
+    <Compile Include="Repository\KategoriDal.cs" />
     <Compile Include="Repository\SalesPersonDal.cs" />
+    <Compile Include="Repository\WilayahDal.cs" />
     <Compile Include="Service\BrgSyncService.cs" />
     <Compile Include="Model\BrgType.cs" />
     <Compile Include="Form1.cs">
@@ -99,7 +103,9 @@
     <Compile Include="Repository\ConnStringHelper.cs" />
     <Compile Include="Repository\CustomerDal.cs" />
     <Compile Include="Service\CustomerSyncService.cs" />
+    <Compile Include="Service\KategoriSyncService.cs" />
     <Compile Include="Service\SalesPersonSyncService.cs" />
+    <Compile Include="Service\WilayahSyncService.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
