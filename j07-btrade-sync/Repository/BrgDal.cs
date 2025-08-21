@@ -15,7 +15,7 @@ namespace j07_btrade_sync.Repository
             const string sql = @"
                 SELECT
                     aa.BrgId, aa.BrgCode, aa.BrgName,
-                    ISNULL(bb.KategoriName, '') AS KategoriName,
+                    ISNULL(bb.KategoriName, '') + ' - ' + ISNULL(gg.Keyword, '') AS KategoriName,
                     ISNULL(cc.Satuan, '') AS SatBesar,
                     ISNULL(dd.Satuan, '') AS SatKecil,
                     ISNULL(cc.Conversion, 1) AS Konversi,
@@ -37,6 +37,7 @@ namespace j07_btrade_sync.Repository
                         FROM BTR_BrgHarga
                         GROUP BY BrgId
                     ) ff ON aa.BrgId = ff.BrgId
+                    LEFT JOIN BTR_Supplier gg ON aa.SupplierId = gg.SupplierId
                  ";
             
             using(var conn = new SqlConnection(ConnStringHelper.Get()))
