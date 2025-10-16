@@ -65,6 +65,22 @@ namespace j07_btrade_sync.Service
                 coordinateTimeStampe, CoordinateUser);
             return result;
         }
+        public static CustomerDto Create(CustomerType model)
+        {
+            var coordinateTimeStamp = EpochConverter.ToMilliseconds(model.CoordinateTimeStamp);
+            var result = new CustomerDto{
+                CustomerId = model.CustomerId,
+                CustomerCode = model.CustomerCode,
+                CustomerName = model.CustomerName,
+                Alamat = model.Alamat,
+                Wilayah =model.Wilayah,
+                Latitude =model.Latitude, 
+                Longitude = model.Longitude, 
+                Accuracy = model.Accuracy,
+                CoordinateTimeStamp = coordinateTimeStamp,
+                CoordinateUser = model.CoordinateUser };
+            return result;
+        }
     }
     public static class EpochConverter
     {
@@ -90,4 +106,5 @@ namespace j07_btrade_sync.Service
             return (long)(dateTime.ToUniversalTime() - Epoch).TotalMilliseconds;
         }
     }
+
 }

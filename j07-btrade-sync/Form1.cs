@@ -148,44 +148,6 @@ namespace j07_btrade_sync
                 LogMessage($"ERROR: {ex.Message}", Color.Red);
             }
         }
-        private async void ProcessCustomer()
-        {
-            try
-            {
-                LogMessage("Start processing customer location...");
-                var result = await _customerDownloadUpdatedService.Execute();
-
-                if (result.Item1)
-                {
-                    var listCustomer = result.Item3;
-                    if (listCustomer != null && listCustomer.Any())
-                    {
-                        foreach (var cust in listCustomer)
-                        {
-                            var custDb = _customerDal.GetData(cust.CustomerId);
-                            if (custDb is null)
-                                continue;
-                            _customerDal.UpdateLocation(cust);
-                            LogMessage($"Download location {cust.CustomerName} ({cust.Latitude}, {cust.Longitude} ...", Color.Blue);
-                        }
-                        LogMessage($"Download done");
-                        await _customerClearUpdateFlagService.Execute();
-                    }
-                    else
-                    {
-                        LogMessage("No new location found");
-                    }
-                }
-                else
-                {
-                    LogMessage($"Download failed: {result.Item2}", Color.Red);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogMessage($"ERROR: {ex.Message}", Color.Red);
-            }
-        }
 
         private void InitializeTimer()
         {
@@ -249,10 +211,48 @@ namespace j07_btrade_sync
         }
 
 
+        private async void ProcessCustomer()
+        {
+            try
+            {
+                LogMessage("Start processing customer location...");
+                var result = await _customerDownloadUpdatedService.Execute();
+
+                if (result.Item1)
+                {
+                    var listCustomer = result.Item3;
+                    if (listCustomer != null && listCustomer.Any())
+                    {
+                        foreach (var cust in listCustomer)
+                        {
+                            var custDb = _customerDal.GetData(cust.CustomerId);
+                            if (custDb is null)
+                                continue;
+                            _customerDal.UpdateLocation(cust);
+                            LogMessage($"Download location {cust.CustomerName} [{cust.Latitude:N5}, {cust.Longitude:N5}] ...", Color.Blue);
+                        }
+                        LogMessage($"Download done");
+                        await _customerClearUpdateFlagService.Execute();
+                    }
+                    else
+                    {
+                        LogMessage("No new location found");
+                    }
+                }
+                else
+                {
+                    LogMessage($"Download failed: {result.Item2}", Color.Red);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"ERROR: {ex.Message}", Color.Red);
+            }
+        }
         private void SyncCustomerButton_Click(object sender, EventArgs e)
         {
             ProcessCustomer();
-            LogMessage("Sync Customer started...", Color.Green);
+            LogMessage("Upload Customer started...", Color.Green);
             var listCustomer = _customerDal.ListData().ToList();
             var result = _customerSyncService.UploadCustomer(listCustomer);
             result.ContinueWith(task =>
@@ -263,7 +263,7 @@ namespace j07_btrade_sync
                 }
                 else
                 {
-                    LogMessage($"Sync failed: {task.Result.Item2}", Color.Red);
+                    LogMessage($"Upload Customer failed: {task.Result.Item2}", Color.Red);
                 }
             });
         }

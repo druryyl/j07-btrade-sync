@@ -13,8 +13,9 @@ namespace j07_btrade_sync.Service
             var baseUrl = ConfigurationManager.AppSettings["btrade-cloud-base-url"];
             var endpoint = $"{baseUrl}/api/Customer/ClearUpdatedFlag";
             var client = new RestClient(endpoint);
-
             var req = new RestRequest();
+            req.AddHeader("Content-Type", "application/json");
+            req.AddJsonBody(new { }); 
 
             //  EXECUTE
             var response = await client.ExecutePatchAsync(req);
