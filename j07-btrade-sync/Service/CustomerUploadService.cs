@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace j07_btrade_sync.Service
 {
-    public class CustomerSyncService
+    public class CustomerUploadService
     {
-        public async Task<(bool, string)> SyncCustomer(IEnumerable<CustomerType> listCustomer)
+        public async Task<(bool, string)> UploadCustomer(IEnumerable<CustomerType> listCustomer)
         {
             //  BUILD
             var baseUrl = System.Configuration.ConfigurationManager.AppSettings["btrade-cloud-base-url"];
             var endpoint = $"{baseUrl}/api/Customer";
             var client = new RestClient(endpoint);
             //  serialize object cmd to json using System.Text.Json
-            var requestBody = System.Text.Json.JsonSerializer.Serialize(new CustomerSyncCommand(listCustomer));
+            var requestBody = System.Text.Json.JsonSerializer.Serialize(new CustomerUploadCommand(listCustomer));
             var req = new RestRequest()
                 .AddJsonBody(requestBody);
             //  EXECUTE
@@ -31,9 +31,9 @@ namespace j07_btrade_sync.Service
         }
     }
 
-    public class CustomerSyncCommand 
+    public class CustomerUploadCommand
     {
-        public CustomerSyncCommand(IEnumerable<CustomerType> listCustomer)
+        public CustomerUploadCommand(IEnumerable<CustomerType> listCustomer)
         {
             ListCustomer = new List<CustomerType>(listCustomer);
         } 

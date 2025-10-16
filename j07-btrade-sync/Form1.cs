@@ -13,11 +13,13 @@ namespace j07_btrade_sync
     public partial class Form1 : Form
     {
         private readonly BrgSyncService _brgSyncService;
-        private readonly CustomerSyncService _customerSyncService;
+        private readonly CustomerUploadService _customerSyncService;
         private readonly SalesPersonSyncService _salesPersonSyncService;
         private readonly KategoriSyncService _kategoriSyncService;
         private readonly WilayahSyncService _wilayahSyncService;
         private readonly OrderIncrementalDownloadService _orderDownloadService;
+        private readonly CustomerDownloadUpdatedService _customerDownloadUpdatedService;
+        private readonly CustomerClearUpdateFlagService _customerClearUpdateFlagService;
 
         private readonly BrgDal _brgDal;
         private readonly CustomerDal _customerDal;
@@ -30,6 +32,7 @@ namespace j07_btrade_sync
         private Timer timerClock = new Timer();
         private System.Timers.Timer processingTimer;
         private int processingIntervalMinutes = 5;
+        private const int RANGE_PERIODE = -3;
 
 
         public Form1()
@@ -37,11 +40,13 @@ namespace j07_btrade_sync
             InitializeComponent();
 
             _brgSyncService = new BrgSyncService();
-            _customerSyncService = new CustomerSyncService();
+            _customerSyncService = new CustomerUploadService();
             _salesPersonSyncService = new SalesPersonSyncService();
             _kategoriSyncService = new KategoriSyncService();
             _wilayahSyncService = new WilayahSyncService();
             _orderDownloadService = new OrderIncrementalDownloadService();
+            _customerDownloadUpdatedService = new CustomerDownloadUpdatedService();
+            _customerClearUpdateFlagService = new CustomerClearUpdateFlagService();
 
             _brgDal = new BrgDal();
             _customerDal = new CustomerDal();
@@ -51,17 +56,34 @@ namespace j07_btrade_sync
             _orderDal = new OrderDal();
             _orderItemDal = new OrderItemDal();
 
-            SyncBrgButton.Click += SyncBrgButton_Click;
-            SyncCustomerButton.Click += SyncCustomerButton_Click;
-            SyncSalesPersonBotton.Click += SyncSalesPersonButton_Click;
-            IncrementalDownloadOrderButton.Click += DownloadOrderButton_Click;
             InitializeTimer();
             InitializeClock();
+            RegisterEventHandler();
             LogMessage("BTrade Sync started.");
-            ProcessData();
+            ProcessOrder(RANGE_PERIODE);
             var nextAuto = DateTime.Now.AddMinutes(processingIntervalMinutes);
             LogMessage($"Next auto download start at {nextAuto:HH:mm:ss}");
 
+        }
+
+        private void RegisterEventHandler()
+        {
+            SyncBrgButton.Click += SyncBrgButton_Click;
+            SyncCustomerButton.Click += SyncCustomerButton_Click;
+            SyncSalesPersonBotton.Click += SyncSalesPersonButton_Click;
+
+            // Create context menu
+            ContextMenuStrip menu = new ContextMenuStrip();
+            menu.Items.Add("Quick (H-3)", null, (s, e) => QuickDownloadOrderButton_Click(s,e));
+            menu.Items.Add("Extended  (H-6)", null, (s, e) => ExtenderdDownloadOrderButton_Click(s, e));
+
+            // Attach menu to button
+            IncrementalDownloadOrderButton.ContextMenuStrip = menu;
+
+            // Optional: Show menu on click
+            IncrementalDownloadOrderButton.Click += (s, e) => {
+                menu.Show(IncrementalDownloadOrderButton, new Point(0, IncrementalDownloadOrderButton.Height));
+            };
         }
         public void LogMessage(string message, Color? color = null)
         {
@@ -81,13 +103,15 @@ namespace j07_btrade_sync
             LogTextBox.ScrollToCaret();
         }
 
-        private async void ProcessData()
+        private async void ProcessOrder(int periodeLength)
         {
+            if (periodeLength > 0)
+                periodeLength = periodeLength * -1;
             try
             {
                 LogMessage("Starting processing cycle...");
                 var today = DateTime.Now.Date;
-                var startDate = today.AddDays(-3);
+                var startDate = today.AddDays(periodeLength);
                 var periode = new Periode(startDate, today);
                 var result = await _orderDownloadService.Execute(periode);
                 
@@ -112,6 +136,44 @@ namespace j07_btrade_sync
                     else
                     {
                         LogMessage("No orders found");
+                    }
+                }
+                else
+                {
+                    LogMessage($"Download failed: {result.Item2}", Color.Red);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"ERROR: {ex.Message}", Color.Red);
+            }
+        }
+        private async void ProcessCustomer()
+        {
+            try
+            {
+                LogMessage("Start processing customer location...");
+                var result = await _customerDownloadUpdatedService.Execute();
+
+                if (result.Item1)
+                {
+                    var listCustomer = result.Item3;
+                    if (listCustomer != null && listCustomer.Any())
+                    {
+                        foreach (var cust in listCustomer)
+                        {
+                            var custDb = _customerDal.GetData(cust.CustomerId);
+                            if (custDb is null)
+                                continue;
+                            _customerDal.UpdateLocation(cust);
+                            LogMessage($"Download location {cust.CustomerName} ({cust.Latitude}, {cust.Longitude} ...", Color.Blue);
+                        }
+                        LogMessage($"Download done");
+                        await _customerClearUpdateFlagService.Execute();
+                    }
+                    else
+                    {
+                        LogMessage("No new location found");
                     }
                 }
                 else
@@ -155,7 +217,8 @@ namespace j07_btrade_sync
 
             try
             {
-                await Task.Run(() => ProcessData()); // Run processing on background thread
+                await Task.Run(() => ProcessOrder(RANGE_PERIODE)); // Run processing on background thread
+                await Task.Run(() => ProcessCustomer()); 
             }
             catch (Exception ex)
             {
@@ -172,17 +235,26 @@ namespace j07_btrade_sync
             }
         }
 
-        private void DownloadOrderButton_Click(object sender, EventArgs e)
+        private void QuickDownloadOrderButton_Click(object sender, EventArgs e)
         {
-            LogMessage($"Manual download triggered", Color.Green);
-            ProcessData();
+            LogMessage($"Quick Download triggered", Color.Green);
+            ProcessOrder(-3);
+            ProcessCustomer();
         }
+        private void ExtenderdDownloadOrderButton_Click(object sender, EventArgs e)
+        {
+            LogMessage($"Extended Download triggered", Color.Green);
+            ProcessOrder(-6);
+            ProcessCustomer();
+        }
+
 
         private void SyncCustomerButton_Click(object sender, EventArgs e)
         {
+            ProcessCustomer();
             LogMessage("Sync Customer started...", Color.Green);
             var listCustomer = _customerDal.ListData().ToList();
-            var result = _customerSyncService.SyncCustomer(listCustomer);
+            var result = _customerSyncService.UploadCustomer(listCustomer);
             result.ContinueWith(task =>
             {
                 if (task.Result.Item1)

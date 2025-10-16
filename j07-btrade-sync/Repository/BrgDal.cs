@@ -19,7 +19,7 @@ namespace j07_btrade_sync.Repository
                     ISNULL(cc.Satuan, '') AS SatBesar,
                     ISNULL(dd.Satuan, '') AS SatKecil,
                     ISNULL(cc.Conversion, 1) AS Konversi,
-                    ISNULL(ff.HrgSat, 0) AS HrgSat,
+                    ISNULL(ff.HrgSat, ISNULL(ff1.HrgSat,0)) AS HrgSat,
                     ISNULL(ee.Stok, 0) AS Stok
 
                 FROM 
@@ -33,10 +33,16 @@ namespace j07_btrade_sync.Repository
                         GROUP BY BrgId
                     ) ee ON aa.BrgId = ee.BrgId
                     LEFT JOIN (
+                        SELECT BrgId, Harga AS HrgSat
+                        FROM BTR_BrgHarga
+                        WHERE HargaTypeId = 'MT'
+                    ) ff ON aa.BrgId = ff.BrgId
+                    LEFT JOIN (
                         SELECT BrgId, MAX(Harga) AS HrgSat
                         FROM BTR_BrgHarga
                         GROUP BY BrgId
-                    ) ff ON aa.BrgId = ff.BrgId
+                    ) ff1 ON aa.BrgId = ff1.BrgId
+
                     LEFT JOIN BTR_Supplier gg ON aa.SupplierId = gg.SupplierId
                  ";
             

@@ -14,7 +14,7 @@ namespace j07_btrade_sync.Model
         public OrderModel(string orderId, string orderLocalCode,
             string customerId, string customerCode, string customerName, string customerAddress,
             string orderDate, string salesId, string salesName, decimal totalAmount,
-            string userEmail, string statusSync, string fakturCode)
+            string userEmail, string statusSync, string fakturCode, string orderNote)
         {
             OrderId = orderId;
             OrderLocalId = orderLocalCode;
@@ -30,6 +30,7 @@ namespace j07_btrade_sync.Model
             StatusSync = statusSync;
             FakturCode = fakturCode;
             ListItems = new List<OrderItemType>();
+            OrderNote = orderNote;
         }
 
         public string OrderId { get;  set; }
@@ -48,10 +49,11 @@ namespace j07_btrade_sync.Model
         public string StatusSync { get; set; }
 
         public string FakturCode { get; set; }
+        public string OrderNote { get; set; }
 
         public List<OrderItemType> ListItems { get; set; }
 
-        public static IOrderKey Key(string id) => new OrderModel(id, "", "", "", "", "", "", "", "", 0, "", "", "");
+        public static IOrderKey Key(string id) => new OrderModel(id, "", "", "", "", "", "", "", "", 0, "", "", "", "");
     }
 
     public interface IOrderKey

@@ -46,11 +46,6 @@ namespace j07_btrade_sync.Service
             }
 
             return (true, "", apiResponse.Data ?? new List<OrderModel>());
-            //}
-            //catch (JsonException ex)
-            //{
-            //    return (false, $"Failed to parse API response: {ex.Message}", null);
-            //}
         }
     }
 }
