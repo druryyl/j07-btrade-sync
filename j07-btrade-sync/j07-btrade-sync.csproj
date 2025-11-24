@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -126,12 +126,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\CheckInModel.cs" />
     <Compile Include="Model\CustomerLocHistModel.cs" />
     <Compile Include="Model\KategoriType.cs" />
     <Compile Include="Model\OrderItemType.cs" />
     <Compile Include="Model\OrderModel.cs" />
     <Compile Include="Model\SalesPersonType.cs" />
     <Compile Include="Model\WilayahType.cs" />
+    <Compile Include="Repository\CheckInDal.cs" />
     <Compile Include="Repository\KategoriDal.cs" />
     <Compile Include="Repository\OrderDal.cs" />
     <Compile Include="Repository\OrderItemDal.cs" />
@@ -151,6 +153,7 @@
     <Compile Include="Repository\BrgDal.cs" />
     <Compile Include="Repository\ConnStringHelper.cs" />
     <Compile Include="Repository\CustomerDal.cs" />
+    <Compile Include="Service\CheckInIncrementalDownloadService.cs" />
     <Compile Include="Service\CustomerClearUpdateFlagService.cs" />
     <Compile Include="Service\CustomerDownloadUpdatedService.cs" />
     <Compile Include="Service\CustomerUploadService.cs" />

@@ -20,6 +20,7 @@ namespace j07_btrade_sync
         private readonly OrderIncrementalDownloadService _orderDownloadService;
         private readonly CustomerDownloadUpdatedService _customerDownloadUpdatedService;
         private readonly CustomerClearUpdateFlagService _customerClearUpdateFlagService;
+        private readonly CheckInIncrementalDownloadService _checkInDownloadService;
 
         private readonly BrgDal _brgDal;
         private readonly CustomerDal _customerDal;
@@ -28,6 +29,7 @@ namespace j07_btrade_sync
         private readonly WilayahDal _wilayahDal;
         private readonly OrderDal _orderDal;
         private readonly OrderItemDal _orderItemDal;
+        private readonly CheckInDal _checkInDal;
 
         private Timer timerClock = new Timer();
         private System.Timers.Timer processingTimer;
@@ -47,6 +49,7 @@ namespace j07_btrade_sync
             _orderDownloadService = new OrderIncrementalDownloadService();
             _customerDownloadUpdatedService = new CustomerDownloadUpdatedService();
             _customerClearUpdateFlagService = new CustomerClearUpdateFlagService();
+            _checkInDownloadService = new CheckInIncrementalDownloadService();
 
             _brgDal = new BrgDal();
             _customerDal = new CustomerDal();
@@ -55,12 +58,15 @@ namespace j07_btrade_sync
             _wilayahDal = new WilayahDal();
             _orderDal = new OrderDal();
             _orderItemDal = new OrderItemDal();
+            _checkInDal = new CheckInDal();
 
             InitializeTimer();
             InitializeClock();
             RegisterEventHandler();
             LogMessage("BTrade Sync started.");
             ProcessOrder(RANGE_PERIODE);
+            ProcessCheckIn(RANGE_PERIODE);
+
             var nextAuto = DateTime.Now.AddMinutes(processingIntervalMinutes);
             LogMessage($"Next auto download start at {nextAuto:HH:mm:ss}");
 
@@ -149,6 +155,50 @@ namespace j07_btrade_sync
             }
         }
 
+        private async void ProcessCheckIn(int periodeLength)
+        {
+            if (periodeLength > 0)
+                periodeLength = periodeLength * -1;
+            try
+            {
+                LogMessage("Starting check-in processing cycle...");
+                var today = DateTime.Now.Date;
+                var startDate = today.AddDays(periodeLength);
+                var periode = new Periode(startDate, today);
+                var result = await _checkInDownloadService.Execute(periode);
+
+                if (result.Item1)
+                {
+                    var listCheckIn = result.Item3;
+                    if (listCheckIn != null && listCheckIn.Any())
+                    {
+                        foreach (var checkIn in listCheckIn)
+                        {
+                            var checkInDb = _checkInDal.GetData(checkIn);
+                            if (checkInDb != null)
+                                continue;
+
+                            _checkInDal.Insert(checkIn);
+                            LogMessage($"Download check-in {checkIn.UserEmail} - {checkIn.CustomerName} ...", Color.Blue);
+                        }
+                        LogMessage($"Check-in download done");
+                    }
+                    else
+                    {
+                        LogMessage("No check-ins found");
+                    }
+                }
+                else
+                {
+                    LogMessage($"Check-in download failed: {result.Item2}", Color.Red);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"CHECK-IN ERROR: {ex.Message}", Color.Red);
+            }
+        }
+
         private void InitializeTimer()
         {
             processingTimer = new System.Timers.Timer(processingIntervalMinutes * 60 * 1000);
@@ -180,7 +230,8 @@ namespace j07_btrade_sync
             try
             {
                 await Task.Run(() => ProcessOrder(RANGE_PERIODE)); // Run processing on background thread
-                await Task.Run(() => ProcessCustomer()); 
+                await Task.Run(() => ProcessCustomer());
+                await Task.Run(() => ProcessCheckIn(RANGE_PERIODE));
             }
             catch (Exception ex)
             {
@@ -202,12 +253,14 @@ namespace j07_btrade_sync
             LogMessage($"Quick Download triggered", Color.Green);
             ProcessOrder(-3);
             ProcessCustomer();
+            ProcessCheckIn(-3);
         }
         private void ExtenderdDownloadOrderButton_Click(object sender, EventArgs e)
         {
             LogMessage($"Extended Download triggered", Color.Green);
             ProcessOrder(-6);
             ProcessCustomer();
+            ProcessCheckIn(-6);
         }
 
 
