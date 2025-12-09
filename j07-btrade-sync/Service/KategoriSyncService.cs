@@ -1,4 +1,5 @@
 ﻿using j07_btrade_sync.Model;
+using j07_btrade_sync.Shared;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,26 @@ namespace j07_btrade_sync.Service
 {
     public class KategoriSyncService
     {
-        public async Task<(bool Success, string ErrorMessage)> SyncKategori(IEnumerable<KategoriType> listKategori)
+        private readonly RegistryHelper _registryHelper;
+
+        public KategoriSyncService()
+        {
+            _registryHelper = new RegistryHelper();
+        }
+        public async Task<(bool Success, string ErrorMessage)> SyncKategori(IEnumerable<KategoriType> enumKategori)
         {
             // BUILD
+            var serverTargetId = _registryHelper.ReadString("ServerTargetID");
             var baseUrl = ConfigurationManager.AppSettings["btrade-cloud-base-url"];
             var endpoint = $"{baseUrl}/api/Kategori";
             var client = new RestClient(endpoint);
 
             // Serialize using System.Text.Json
-            var requestBody = JsonSerializer.Serialize(new KategoriSyncCommand(listKategori));
+            var listKategori = enumKategori.ToList();
+            foreach (var item in listKategori)
+                item.ServerId = serverTargetId;
+
+            var requestBody = JsonSerializer.Serialize(new KategoriSyncCommand(listKategori, serverTargetId));
             var req = new RestRequest()
                 .AddJsonBody(requestBody);
 
@@ -41,11 +53,13 @@ namespace j07_btrade_sync.Service
 
     public class KategoriSyncCommand
     {
-        public KategoriSyncCommand(IEnumerable<KategoriType> listKategori)
+        public KategoriSyncCommand(IEnumerable<KategoriType> listKategori, string serverId)
         {
             ListKategori = new List<KategoriType>(listKategori);
+            ServerId = serverId;
         }
 
         public List<KategoriType> ListKategori { get; set; }
+        public string ServerId { get; set; }
     }
 }

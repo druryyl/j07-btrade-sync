@@ -20,7 +20,8 @@ namespace j07_btrade_sync.Repository
                     ISNULL(dd.Satuan, '') AS SatKecil,
                     ISNULL(cc.Conversion, 1) AS Konversi,
                     ISNULL(ff.HrgSat, ISNULL(ff1.HrgSat,0)) AS HrgSat,
-                    ISNULL(ee.Stok, 0) AS Stok
+                    ISNULL(ee.Stok, 0) AS Stok,
+                    '     ' AS ServerId 
 
                 FROM 
                     BTR_Brg aa

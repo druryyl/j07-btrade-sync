@@ -15,7 +15,7 @@ namespace j07_btrade_sync.Repository
         {
             const string sql = @"
                 SELECT
-                    aa.KategoriId, aa.KategoriName
+                    aa.KategoriId, aa.KategoriName, '     ' AS ServerId
                 FROM
                     BTR_Kategori aa";
 

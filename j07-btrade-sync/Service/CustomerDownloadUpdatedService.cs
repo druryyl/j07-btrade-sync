@@ -56,13 +56,14 @@ namespace j07_btrade_sync.Service
         public long CoordinateTimeStamp {get;set;} 
         public string CoordinateUser {get;set;} 
         public bool IsUpdated { get; set; }
+        public string ServerId { get; set; }
 
         public CustomerType ToModel()
         {
             var coordinateTimeStampe = EpochConverter.FromMilliseconds(CoordinateTimeStamp);
             var result = new CustomerType(CustomerId, CustomerCode, CustomerName,
                 Alamat, Wilayah, Latitude, Longitude, Accuracy,
-                coordinateTimeStampe, CoordinateUser);
+                coordinateTimeStampe, CoordinateUser, ServerId);
             return result;
         }
         public static CustomerDto Create(CustomerType model)
@@ -78,7 +79,8 @@ namespace j07_btrade_sync.Service
                 Longitude = model.Longitude, 
                 Accuracy = model.Accuracy,
                 CoordinateTimeStamp = coordinateTimeStamp,
-                CoordinateUser = model.CoordinateUser };
+                CoordinateUser = model.CoordinateUser,
+                ServerId = model.ServerId};
             return result;
         }
     }

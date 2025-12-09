@@ -10,7 +10,7 @@ namespace j07_btrade_sync
     {
         public BrgType(string brgId, string brgCode, string brgName, string kategoriName,
             string satBesar, string satKecil, int konversi, 
-            decimal hrgSat, int stok)
+            decimal hrgSat, int stok, string serverId)
         {
             BrgId = brgId;
             BrgCode = brgCode;
@@ -21,6 +21,7 @@ namespace j07_btrade_sync
             Konversi = konversi;
             HrgSat = hrgSat;
             Stok = stok;
+            ServerId = serverId;
         }
         public string BrgId { get; set; }
         public string BrgCode { get; set; }
@@ -31,6 +32,7 @@ namespace j07_btrade_sync
         public int Konversi { get; set; }
         public decimal HrgSat { get; set; }
         public int Stok { get; set; }
+        public string ServerId { get; set; }
     }
 
     public interface IBrgKey

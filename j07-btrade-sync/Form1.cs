@@ -1,5 +1,6 @@
 ﻿using j07_btrade_sync.Repository;
 using j07_btrade_sync.Service;
+using j07_btrade_sync.Shared;
 using Nuna.Lib.ValidationHelper;
 using System;
 using System.Drawing;
@@ -35,6 +36,7 @@ namespace j07_btrade_sync
         private System.Timers.Timer processingTimer;
         private int processingIntervalMinutes = 5;
         private const int RANGE_PERIODE = -3;
+        private readonly RegistryHelper _registryHelper;
 
 
         public Form1()
@@ -59,6 +61,7 @@ namespace j07_btrade_sync
             _orderDal = new OrderDal();
             _orderItemDal = new OrderItemDal();
             _checkInDal = new CheckInDal();
+            _registryHelper = new RegistryHelper();
 
             InitializeTimer();
             InitializeClock();
@@ -82,6 +85,9 @@ namespace j07_btrade_sync
             ContextMenuStrip menu = new ContextMenuStrip();
             menu.Items.Add("Quick (H-3)", null, (s, e) => QuickDownloadOrderButton_Click(s,e));
             menu.Items.Add("Extended  (H-6)", null, (s, e) => ExtenderdDownloadOrderButton_Click(s, e));
+            menu.Items.Add("-", null);
+            menu.Items.Add("Set Server ID", null, (s, e) => SetServerId_Click(s, e));
+
 
             // Attach menu to button
             IncrementalDownloadOrderButton.ContextMenuStrip = menu;
@@ -91,6 +97,16 @@ namespace j07_btrade_sync
                 menu.Show(IncrementalDownloadOrderButton, new Point(0, IncrementalDownloadOrderButton.Height));
             };
         }
+
+        private void SetServerId_Click(object s, EventArgs e)
+        {
+            var dialogResult = MessageBox.Show("Set Server ID akan mempengaruhi transfer data antar cabang. Lanjutkan?", "X", MessageBoxButtons.YesNoCancel);
+            if ( dialogResult != DialogResult.Yes)
+                return;
+            var formKonfig = new KonfigurasiForm();
+            formKonfig.ShowDialog();
+        }
+
         public void LogMessage(string message, Color? color = null)
         {
             if (LogTextBox.InvokeRequired)

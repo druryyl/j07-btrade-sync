@@ -21,7 +21,8 @@ namespace j07_btrade_sync.Repository
                 SELECT
                     aa.CustomerId, aa.CustomerCode, aa.CustomerName,
                     aa.Address1 as Alamat, ISNULL(bb.WilayahName, '') AS Wilayah,
-                    aa.Latitude, aa.Longitude, aa.Accuracy, aa.CoordinateTimeStamp, aa.CoordinateUser
+                    aa.Latitude, aa.Longitude, aa.Accuracy, aa.CoordinateTimeStamp, aa.CoordinateUser,
+                    '     ' AS ServerId 
                 FROM
                     BTR_Customer aa
                     LEFT JOIN BTR_Wilayah bb ON aa.WilayahId = bb.WilayahId";
@@ -39,7 +40,8 @@ namespace j07_btrade_sync.Repository
                 SELECT
                     aa.CustomerId, aa.CustomerCode, aa.CustomerName,
                     aa.Address1 as Alamat, ISNULL(bb.WilayahName, '') AS Wilayah,
-                    aa.Latitude, aa.Longitude, aa.Accuracy, aa.CoordinateTimeStamp, aa.CoordinateUser
+                    aa.Latitude, aa.Longitude, aa.Accuracy, aa.CoordinateTimeStamp, aa.CoordinateUser,
+                    '     ' AS ServerId
                 FROM
                     BTR_Customer aa
                     LEFT JOIN BTR_Wilayah bb ON aa.WilayahId = bb.WilayahId

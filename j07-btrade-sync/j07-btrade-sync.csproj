@@ -126,6 +126,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KonfigurasiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KonfigurasiForm.Designer.cs">
+      <DependentUpon>KonfigurasiForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\CheckInModel.cs" />
     <Compile Include="Model\CustomerLocHistModel.cs" />
     <Compile Include="Model\KategoriType.cs" />
@@ -161,8 +167,12 @@
     <Compile Include="Service\OrderIncrementalDownloadService.cs" />
     <Compile Include="Service\SalesPersonSyncService.cs" />
     <Compile Include="Service\WilayahSyncService.cs" />
+    <Compile Include="Shared\RegistryHelper.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KonfigurasiForm.resx">
+      <DependentUpon>KonfigurasiForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

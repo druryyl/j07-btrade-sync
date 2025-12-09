@@ -10,7 +10,7 @@ namespace j07_btrade_sync.Model
     {
         public CustomerType(string customerId, string customerCode, string customerName, 
             string alamat, string wilayah, double latitude, double longitude, double accuracy, 
-            DateTime coordinateTimeStamp, string coordinateUser)
+            DateTime coordinateTimeStamp, string coordinateUser, string serverId)
         {
             CustomerId = customerId;
             CustomerCode = customerCode;
@@ -22,6 +22,7 @@ namespace j07_btrade_sync.Model
             Accuracy = accuracy;
             CoordinateTimeStamp = coordinateTimeStamp;
             CoordinateUser = coordinateUser;
+            ServerId = serverId;
         }
 
         public string CustomerId { get; set; }
@@ -34,5 +35,6 @@ namespace j07_btrade_sync.Model
         public double Accuracy { get; set; }
         public DateTime CoordinateTimeStamp { get; set; }
         public string CoordinateUser { get; set;  }
+        public string ServerId { get; set; }
     }
 }

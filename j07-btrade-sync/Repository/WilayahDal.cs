@@ -14,7 +14,7 @@ namespace j07_btrade_sync.Repository
         {
             const string sql = @"
                 SELECT
-                    aa.WilayahId, aa.WilayahName
+                    aa.WilayahId, aa.WilayahName, '     ' AS ServerId
                 FROM
                     BTR_Wilayah aa";
             using (var conn = new System.Data.SqlClient.SqlConnection(ConnStringHelper.Get()))
