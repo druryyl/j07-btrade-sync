@@ -8,6 +8,9 @@ namespace j07_btrade_sync.Model
 {
     public class CustomerType
     {
+        public CustomerType()
+        {
+        }
         public CustomerType(string customerId, string customerCode, string customerName, 
             string alamat, string wilayah, double latitude, double longitude, double accuracy, 
             DateTime coordinateTimeStamp, string coordinateUser, string serverId)

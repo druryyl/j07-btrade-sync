@@ -69,10 +69,17 @@ namespace j07_btrade_sync
             LogMessage("BTrade Sync started.");
             ProcessOrder(RANGE_PERIODE);
             ProcessCheckIn(RANGE_PERIODE);
+            ShowServerTarget();
 
             var nextAuto = DateTime.Now.AddMinutes(processingIntervalMinutes);
             LogMessage($"Next auto download start at {nextAuto:HH:mm:ss}");
 
+        }
+
+        private void ShowServerTarget()
+        {
+            var server = _registryHelper.ReadString("ServerTargetID");
+            this.Text = $"BTrade Sync - Server ID: {server}";
         }
 
         private void RegisterEventHandler()

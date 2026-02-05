@@ -1,4 +1,5 @@
 ﻿using j07_btrade_sync.Model;
+using j07_btrade_sync.Shared;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,18 @@ namespace j07_btrade_sync.Service
 {
     public class CustomerDownloadUpdatedService
     {
+        private readonly RegistryHelper _registryHelper;
+
+        public CustomerDownloadUpdatedService()
+        {
+            _registryHelper = new RegistryHelper();
+        }
         public async Task<(bool, string, IEnumerable<CustomerType>)> Execute()
         {
             //  BUILD
+            var serverTargetId = _registryHelper.ReadString("ServerTargetID");
             var baseUrl = System.Configuration.ConfigurationManager.AppSettings["btrade-cloud-base-url"];
-            var endpoint = $"{baseUrl}/api/Customer/Updated";
+            var endpoint = $"{baseUrl}/api/Customer/Updated/{serverTargetId}";
             var client = new RestClient(endpoint);
             var req = new RestRequest();
             //  EXECUTE
