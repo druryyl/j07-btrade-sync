@@ -11,7 +11,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace j07_btrade_sync
 {
-    public partial class Form1 : Form
+    public partial class SyncForm : Form
     {
         private readonly BrgSyncService _brgSyncService;
         private readonly CustomerUploadService _customerSyncService;
@@ -39,7 +39,7 @@ namespace j07_btrade_sync
         private readonly RegistryHelper _registryHelper;
 
 
-        public Form1()
+        public SyncForm()
         {
             InitializeComponent();
 

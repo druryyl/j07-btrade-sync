@@ -1,6 +1,6 @@
 ﻿namespace j07_btrade_sync
 {
-    partial class Form1
+    partial class SyncForm
     {
         /// <summary>
         /// Required designer variable.

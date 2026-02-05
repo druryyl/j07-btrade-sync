@@ -147,11 +147,11 @@
     <Compile Include="Repository\WilayahDal.cs" />
     <Compile Include="Service\BrgSyncService.cs" />
     <Compile Include="Model\BrgType.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="SyncForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="SyncForm.Designer.cs">
+      <DependentUpon>SyncForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\CustomerType.cs" />
     <Compile Include="Program.cs" />
@@ -168,8 +168,8 @@
     <Compile Include="Service\SalesPersonSyncService.cs" />
     <Compile Include="Service\WilayahSyncService.cs" />
     <Compile Include="Shared\RegistryHelper.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="SyncForm.resx">
+      <DependentUpon>SyncForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="KonfigurasiForm.resx">
       <DependentUpon>KonfigurasiForm.cs</DependentUpon>
