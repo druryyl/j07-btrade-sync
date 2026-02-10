@@ -107,6 +107,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -137,16 +138,23 @@
     <Compile Include="Model\KategoriType.cs" />
     <Compile Include="Model\OrderItemType.cs" />
     <Compile Include="Model\OrderModel.cs" />
+    <Compile Include="Model\PackingOrderDepoModel.cs" />
+    <Compile Include="Model\PackingOrderItemModel.cs" />
+    <Compile Include="Model\PackingOrderModel.cs" />
     <Compile Include="Model\SalesPersonType.cs" />
     <Compile Include="Model\WilayahType.cs" />
     <Compile Include="Repository\CheckInDal.cs" />
     <Compile Include="Repository\KategoriDal.cs" />
     <Compile Include="Repository\OrderDal.cs" />
     <Compile Include="Repository\OrderItemDal.cs" />
+    <Compile Include="Repository\PackingOrderDal.cs" />
+    <Compile Include="Repository\PackingOrderDepoDal.cs" />
+    <Compile Include="Repository\PackingOrderItemDal.cs" />
     <Compile Include="Repository\SalesPersonDal.cs" />
     <Compile Include="Repository\WilayahDal.cs" />
     <Compile Include="Service\BrgSyncService.cs" />
     <Compile Include="Model\BrgType.cs" />
+    <Compile Include="Service\PackingOrderUploadSvc.cs" />
     <Compile Include="SyncForm.cs">
       <SubType>Form</SubType>
     </Compile>

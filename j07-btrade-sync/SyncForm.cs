@@ -1,8 +1,11 @@
-﻿using j07_btrade_sync.Repository;
+﻿using j07_btrade_sync.Model;
+using j07_btrade_sync.Repository;
 using j07_btrade_sync.Service;
 using j07_btrade_sync.Shared;
 using Nuna.Lib.ValidationHelper;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +25,7 @@ namespace j07_btrade_sync
         private readonly CustomerDownloadUpdatedService _customerDownloadUpdatedService;
         private readonly CustomerClearUpdateFlagService _customerClearUpdateFlagService;
         private readonly CheckInIncrementalDownloadService _checkInDownloadService;
+        private readonly PackingOrderUploadSvc _packingOrderUploadSvc;
 
         private readonly BrgDal _brgDal;
         private readonly CustomerDal _customerDal;
@@ -31,13 +35,14 @@ namespace j07_btrade_sync
         private readonly OrderDal _orderDal;
         private readonly OrderItemDal _orderItemDal;
         private readonly CheckInDal _checkInDal;
+        private readonly PackingOrderDal _packingOrderDal;
+        private readonly PackingOrderItemDal _packingOrderItemDal;
 
         private Timer timerClock = new Timer();
         private System.Timers.Timer processingTimer;
         private int processingIntervalMinutes = 5;
         private const int RANGE_PERIODE = -3;
         private readonly RegistryHelper _registryHelper;
-
 
         public SyncForm()
         {
@@ -52,6 +57,7 @@ namespace j07_btrade_sync
             _customerDownloadUpdatedService = new CustomerDownloadUpdatedService();
             _customerClearUpdateFlagService = new CustomerClearUpdateFlagService();
             _checkInDownloadService = new CheckInIncrementalDownloadService();
+            _packingOrderUploadSvc = new PackingOrderUploadSvc();
 
             _brgDal = new BrgDal();
             _customerDal = new CustomerDal();
@@ -62,13 +68,16 @@ namespace j07_btrade_sync
             _orderItemDal = new OrderItemDal();
             _checkInDal = new CheckInDal();
             _registryHelper = new RegistryHelper();
+            _packingOrderDal = new PackingOrderDal();
+            _packingOrderItemDal = new PackingOrderItemDal();
 
             InitializeTimer();
             InitializeClock();
             RegisterEventHandler();
             LogMessage("BTrade Sync started.");
-            ProcessOrder(RANGE_PERIODE);
-            ProcessCheckIn(RANGE_PERIODE);
+            //ProcessOrder(RANGE_PERIODE);
+            //ProcessCheckIn(RANGE_PERIODE);
+            ProcessPackingOrder(RANGE_PERIODE);
             ShowServerTarget();
 
             var nextAuto = DateTime.Now.AddMinutes(processingIntervalMinutes);
@@ -252,9 +261,10 @@ namespace j07_btrade_sync
 
             try
             {
-                await Task.Run(() => ProcessOrder(RANGE_PERIODE)); // Run processing on background thread
-                await Task.Run(() => ProcessCustomer());
-                await Task.Run(() => ProcessCheckIn(RANGE_PERIODE));
+                //await Task.Run(() => ProcessOrder(RANGE_PERIODE)); // Run processing on background thread
+                //await Task.Run(() => ProcessCustomer());
+                //await Task.Run(() => ProcessCheckIn(RANGE_PERIODE));
+                await Task.Run(() => ProcessPackingOrder(RANGE_PERIODE));
             }
             catch (Exception ex)
             {
@@ -277,6 +287,7 @@ namespace j07_btrade_sync
             ProcessOrder(-3);
             ProcessCustomer();
             ProcessCheckIn(-3);
+            ProcessPackingOrder(-3);
         }
         private void ExtenderdDownloadOrderButton_Click(object sender, EventArgs e)
         {
@@ -284,8 +295,8 @@ namespace j07_btrade_sync
             ProcessOrder(-6);
             ProcessCustomer();
             ProcessCheckIn(-6);
+            ProcessPackingOrder(-6);
         }
-
 
         private async void ProcessCustomer()
         {
@@ -375,7 +386,6 @@ namespace j07_btrade_sync
                     //MessageBox.Show($"Kategori sync failed: {task.Result.Item2}");
                 }
             });
-
         }
         private void SyncSalesPersonButton_Click(object sender, EventArgs e)
         {
@@ -408,6 +418,39 @@ namespace j07_btrade_sync
                 }
             });
         }
+        private void ProcessPackingOrder(int periodeLength)
+        {
+            LogMessage("Upload PackingOrder started...", Color.Green);
+            var listPacking = CreateListPackingOrder(periodeLength);
+            var result = _packingOrderUploadSvc.UploadPackingOrder(listPacking);
+            result.ContinueWith(task =>
+            {
+                if (task.Result.Item1)
+                {
+                    if (task.Result.Item2 != "")
+                        LogMessage($"Uploading Packing Order...\r{task.Result.Item2}", Color.Green);
+                    LogMessage("Done", Color.Green);
+                }
+                else
+                {
+                    LogMessage($"Sync failed: {task.Result.Item2}", Color.Red);
+                }
+            });
+        }
 
+        private IEnumerable<PackingOrderModel> CreateListPackingOrder(int periodeLength)
+        {
+            var startDate = DateTime.Now.Date.AddDays(periodeLength);
+            var endDate = DateTime.Now;
+            var periode = new Periode(startDate, endDate);
+            var listHdr = _packingOrderDal.ListData(periode)?.ToList();
+            listHdr.RemoveAll(x => x.UploadTimestamp != new DateTime(3000, 1, 1));
+            foreach(var hdr in listHdr)
+            {
+                var listItem = _packingOrderItemDal.ListData(hdr)?.ToList();
+                hdr.SetListItem(listItem.Select(x => x.ToModel()));
+            }
+            return listHdr;
+        }
     }
 }

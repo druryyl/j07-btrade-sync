@@ -103,13 +103,13 @@
             this.LogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LogTextBox.Location = new System.Drawing.Point(4, 4);
             this.LogTextBox.Name = "LogTextBox";
-            this.LogTextBox.Size = new System.Drawing.Size(454, 284);
+            this.LogTextBox.Size = new System.Drawing.Size(454, 291);
             this.LogTextBox.TabIndex = 4;
             this.LogTextBox.Text = "";
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 349);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 356);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(486, 22);
             this.statusStrip1.TabIndex = 5;
@@ -125,7 +125,7 @@
             this.panel1.Location = new System.Drawing.Point(12, 43);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(4);
-            this.panel1.Size = new System.Drawing.Size(462, 292);
+            this.panel1.Size = new System.Drawing.Size(462, 299);
             this.panel1.TabIndex = 6;
             // 
             // contextMenuStrip1
@@ -133,12 +133,12 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // Form1
+            // SyncForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(79)))), ((int)(((byte)(107)))));
-            this.ClientSize = new System.Drawing.Size(486, 371);
+            this.ClientSize = new System.Drawing.Size(486, 378);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.IncrementalDownloadOrderButton);
@@ -146,7 +146,7 @@
             this.Controls.Add(this.SyncCustomerButton);
             this.Controls.Add(this.SyncBrgButton);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Name = "Form1";
+            this.Name = "SyncForm";
             this.Text = "BTrade Sync";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
