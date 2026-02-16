@@ -44,6 +44,11 @@ namespace j07_btrade_sync
         private const int RANGE_PERIODE = -3;
         private readonly RegistryHelper _registryHelper;
 
+        private bool _downloadSalesOrder;
+        private bool _syncCustomerLocation;
+        private bool _downloadCheckIn;
+        private bool _uploadPackingOrder;
+
         public SyncForm()
         {
             InitializeComponent();
@@ -70,21 +75,29 @@ namespace j07_btrade_sync
             _registryHelper = new RegistryHelper();
             _packingOrderDal = new PackingOrderDal();
             _packingOrderItemDal = new PackingOrderItemDal();
+            LoadConfig();
 
             InitializeTimer();
             InitializeClock();
             RegisterEventHandler();
             LogMessage("BTrade Sync started.");
-            //ProcessOrder(RANGE_PERIODE);
-            //ProcessCheckIn(RANGE_PERIODE);
+            ProcessOrder(RANGE_PERIODE);
+            ProcessCheckIn(RANGE_PERIODE);
             ProcessPackingOrder(RANGE_PERIODE);
+            
             ShowServerTarget();
 
             var nextAuto = DateTime.Now.AddMinutes(processingIntervalMinutes);
             LogMessage($"Next auto download start at {nextAuto:HH:mm:ss}");
 
         }
-
+        private void LoadConfig()
+        {
+            _downloadSalesOrder = _registryHelper.ReadString("DownloadSalesOrder", "0") == "1";
+            _syncCustomerLocation = _registryHelper.ReadString("SyncCustomerLocation", "0") == "1";
+            _downloadCheckIn = _registryHelper.ReadString("DownloadCheckIn", "0") == "1";
+            _uploadPackingOrder = _registryHelper.ReadString("UploadPackingOrder", "0") == "1";
+        }
         private void ShowServerTarget()
         {
             var server = _registryHelper.ReadString("ServerTargetID");
@@ -121,6 +134,7 @@ namespace j07_btrade_sync
                 return;
             var formKonfig = new KonfigurasiForm();
             formKonfig.ShowDialog();
+            LoadConfig();
         }
 
         public void LogMessage(string message, Color? color = null)
@@ -143,6 +157,9 @@ namespace j07_btrade_sync
 
         private async void ProcessOrder(int periodeLength)
         {
+            if (!_downloadSalesOrder)
+                return;
+
             if (periodeLength > 0)
                 periodeLength = periodeLength * -1;
             try
@@ -189,6 +206,9 @@ namespace j07_btrade_sync
 
         private async void ProcessCheckIn(int periodeLength)
         {
+            if (!_downloadCheckIn)
+                return;
+
             if (periodeLength > 0)
                 periodeLength = periodeLength * -1;
             try
@@ -261,9 +281,9 @@ namespace j07_btrade_sync
 
             try
             {
-                //await Task.Run(() => ProcessOrder(RANGE_PERIODE)); // Run processing on background thread
-                //await Task.Run(() => ProcessCustomer());
-                //await Task.Run(() => ProcessCheckIn(RANGE_PERIODE));
+                await Task.Run(() => ProcessOrder(RANGE_PERIODE)); // Run processing on background thread
+                await Task.Run(() => ProcessCustomer());
+                await Task.Run(() => ProcessCheckIn(RANGE_PERIODE));
                 await Task.Run(() => ProcessPackingOrder(RANGE_PERIODE));
             }
             catch (Exception ex)
@@ -300,6 +320,8 @@ namespace j07_btrade_sync
 
         private async void ProcessCustomer()
         {
+            if (!_syncCustomerLocation)
+                return;
             try
             {
                 LogMessage("Start processing customer location...");
@@ -338,6 +360,9 @@ namespace j07_btrade_sync
         }
         private void SyncCustomerButton_Click(object sender, EventArgs e)
         {
+            if (!_syncCustomerLocation)
+                return;
+
             ProcessCustomer();
             LogMessage("Upload Customer started...", Color.Green);
             var listCustomer = _customerDal.ListData().ToList();
@@ -420,6 +445,9 @@ namespace j07_btrade_sync
         }
         private void ProcessPackingOrder(int periodeLength)
         {
+            if (!_uploadPackingOrder)
+                return;
+            
             LogMessage("Upload PackingOrder started...", Color.Green);
             var listPacking = CreateListPackingOrder(periodeLength);
             var result = _packingOrderUploadSvc.UploadPackingOrder(listPacking);
@@ -443,7 +471,7 @@ namespace j07_btrade_sync
             var startDate = DateTime.Now.Date.AddDays(periodeLength);
             var endDate = DateTime.Now;
             var periode = new Periode(startDate, endDate);
-            var listHdr = _packingOrderDal.ListData(periode)?.ToList();
+            var listHdr = _packingOrderDal.ListData(periode)?.ToList() ?? new List<PackingOrderModel>();
             listHdr.RemoveAll(x => x.UploadTimestamp != new DateTime(3000, 1, 1));
             foreach(var hdr in listHdr)
             {
