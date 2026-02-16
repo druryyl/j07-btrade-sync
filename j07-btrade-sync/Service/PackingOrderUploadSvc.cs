@@ -5,6 +5,7 @@ using Nuna.Lib.TransactionHelper;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -100,10 +101,10 @@ namespace j07_btrade_sync.Service
                 x.KategoriName, x.SupplierName, x.QtyBesar, x.SatBesar, x.QtyKecil,
                 x.SatKecil, x.DepoId)).ToList();
 
-            return new PackingOrderUploadDto(model.PackingOrderId, model.PackingOrderDate.ToString("yyyy-MM-dd HH:mm:ss"),
+            return new PackingOrderUploadDto(model.PackingOrderId, model.PackingOrderDate.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                 model.CustomerId, model.CustomerCode, model.CustomerName,
                 model.Alamat, model.NoTelp, model.FakturId, model.FakturCode,
-                model.FakturDate.ToString("yyyy-MM-dd HH:mm:ss"), model.AdminName, model.Latitude, model.Longitude,
+                model.FakturDate.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), model.AdminName, model.Latitude, model.Longitude,
                 model.Accuracy, officeCode,
                 listItem);
         }
