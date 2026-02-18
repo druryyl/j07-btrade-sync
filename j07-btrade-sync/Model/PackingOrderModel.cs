@@ -102,6 +102,10 @@ namespace j07_btrade_sync.Model
         public string FakturCode { get; private set; }
         public DateTime FakturDate { get; private set; }
         public string AdminName { get; private set; }
+        public decimal GrandTotal { get; private set; }
+
+        public string DriverId { get; private set; }
+        public string DriverName { get; private set; }
 
         public DateTime UploadTimestamp { get; private set; }
         public void Upload(DateTime uploadTimestamp)
@@ -114,8 +118,6 @@ namespace j07_btrade_sync.Model
             _listItem.AddRange(listItem.ToList());
         }
         public IEnumerable<PackingOrderItemModel> ListItem => _listItem;
-
-
     }
 
     public interface IPackingOrderKey

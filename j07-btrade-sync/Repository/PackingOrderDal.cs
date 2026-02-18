@@ -17,14 +17,14 @@ namespace j07_btrade_sync.Repository
                     PackingOrderId, PackingOrderDate,
                     CustomerId, CustomerCode, CustomerName, Alamat, NoTelp,
                     Latitude, Longitude, Accuracy,
-                    FakturId, FakturCode, FakturDate, AdminName,
-                    UploadTimestamp)
+                    FakturId, FakturCode, FakturDate, AdminName, GrandTotal,
+                    DriverId, DriverName, UploadTimestamp)
                 VALUES(
                     @PackingOrderId, @PackingOrderDate,
                     @CustomerId, @CustomerCode, @CustomerName, @Alamat, @NoTelp,
                     @Latitude, @Longitude, @Accuracy,
-                    @FakturId, @FakturCode, @FakturDate, @AdminName,
-                    @UploadTimestamp)
+                    @FakturId, @FakturCode, @FakturDate, @AdminName, @GrandTotal,
+                    @DriverId, @DriverName, @UploadTimestamp)
                 ";
 
             var dp = new DynamicParameters();
@@ -45,6 +45,10 @@ namespace j07_btrade_sync.Repository
             dp.AddParam("@FakturCode", dto.FakturCode, SqlDbType.VarChar);
             dp.AddParam("@FakturDate", dto.FakturDate, SqlDbType.DateTime);
             dp.AddParam("@AdminName", dto.AdminName, SqlDbType.VarChar);
+            dp.AddParam("@GrandTotal", dto.GrandTotal, SqlDbType.VarChar);
+
+            dp.AddParam("@DriverId", dto.DriverId, SqlDbType.VarChar);
+            dp.AddParam("@DriverName", dto.DriverName, SqlDbType.VarChar);
             dp.AddParam("@UploadTimestamp", dto.UploadTimestamp, SqlDbType.DateTime);
 
             using (var conn = new SqlConnection(ConnStringHelper.Get()))
@@ -73,6 +77,10 @@ namespace j07_btrade_sync.Repository
                     FakturCode = @FakturCode,
                     FakturDate = @FakturDate,
                     AdminName = @AdminName,
+                    GrandTotal = @GrandTotal,
+
+                    DriverId = @DriverId,
+                    DriverName = @DriverName,
                     UploadTimestamp = @UploadTimestamp
                 WHERE
                     PackingOrderId = @PackingOrderId
@@ -96,6 +104,10 @@ namespace j07_btrade_sync.Repository
             dp.AddParam("@FakturCode", dto.FakturCode, SqlDbType.VarChar);
             dp.AddParam("@FakturDate", dto.FakturDate, SqlDbType.DateTime);
             dp.AddParam("@AdminName", dto.AdminName, SqlDbType.VarChar);
+            dp.AddParam("@GrandTotal", dto.GrandTotal, SqlDbType.VarChar);
+
+            dp.AddParam("@DriverId", dto.DriverId, SqlDbType.VarChar);
+            dp.AddParam("@DriverName", dto.DriverName, SqlDbType.VarChar);
             dp.AddParam("@UploadTimestamp", dto.UploadTimestamp, SqlDbType.DateTime);
 
 
@@ -128,7 +140,8 @@ namespace j07_btrade_sync.Repository
                     PackingOrderId, PackingOrderDate, 
                     CustomerId, CustomerCode, CustomerName, Alamat, NoTelp,
                     Latitude, Longitude, Accuracy,
-                    FakturId, FakturCode, FakturDate, AdminName, UploadTimestamp
+                    FakturId, FakturCode, FakturDate, AdminName, GrandTotal,
+                    DriverId, DriverName, UploadTimestamp
                 FROM BTR_PackingOrder
                 WHERE PackingOrderId = @PackingOrderId
                 ";
@@ -150,7 +163,8 @@ namespace j07_btrade_sync.Repository
                     PackingOrderId, PackingOrderDate, 
                     CustomerId, CustomerCode, CustomerName, Alamat, NoTelp,
                     Latitude, Longitude, Accuracy,
-                    FakturId, FakturCode, FakturDate, AdminName, UploadTimestamp
+                    FakturId, FakturCode, FakturDate, AdminName, GrandTotal,
+                    DriverId, DriverName, UploadTimestamp
                 FROM BTR_PackingOrder
                 WHERE PackingOrderDate BETWEEN @Tgl1 AND @Tgl2
                 ";
@@ -172,7 +186,8 @@ namespace j07_btrade_sync.Repository
                     PackingOrderId, PackingOrderDate,
                     CustomerId, CustomerCode, CustomerName, Alamat, NoTelp,
                     Latitude, Longitude, Accuracy,
-                    FakturId, FakturCode, FakturDate, AdminName, UploadTimestamp
+                    FakturId, FakturCode, FakturDate, AdminName, GrandTotal,
+                    DriverId, DriverName, UploadTimestamp
                 FROM BTR_PackingOrder
                 WHERE FakturId = @FakturId
                 ";
