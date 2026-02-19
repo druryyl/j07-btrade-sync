@@ -15,8 +15,8 @@ namespace j07_btrade_sync.Model
         public PackingOrderModel(string packingOrderId, DateTime packingOrderDate, 
             string customerId, string customerCode, string customerName, string alamat, string noTelp,
             double latitude, double longitude, double accuracy,
-            string fakturId, string fakturCode, DateTime fakturDate, string adminName,
-            DateTime uploadTimestamp, 
+            string fakturId, string fakturCode, DateTime fakturDate, string adminName, decimal grandTotal,
+            string driverId, string driverName, DateTime uploadTimestamp, 
             List<PackingOrderItemModel> listItem)
         {
             PackingOrderId = packingOrderId;
@@ -33,14 +33,17 @@ namespace j07_btrade_sync.Model
             FakturCode = fakturCode;
             FakturDate = fakturDate;
             AdminName = adminName;
+            GrandTotal = grandTotal;
+            DriverId = driverId;
+            DriverName = driverName;
             UploadTimestamp = uploadTimestamp;
             _listItem = listItem;
         }
         public PackingOrderModel(string packingOrderId, DateTime packingOrderDate,
             string customerId, string customerCode, string customerName, string alamat, string noTelp,
             double latitude, double longitude, double accuracy,
-            string fakturId, string fakturCode, DateTime fakturDate, string adminName,
-            DateTime uploadTimestamp)
+            string fakturId, string fakturCode, DateTime fakturDate, string adminName, decimal grandTotal,
+            string driverId, string driverName, DateTime uploadTimestamp)
         {
             PackingOrderId = packingOrderId;
             PackingOrderDate = packingOrderDate;
@@ -56,6 +59,9 @@ namespace j07_btrade_sync.Model
             FakturCode = fakturCode;
             FakturDate = fakturDate;
             AdminName = adminName;
+            GrandTotal = grandTotal;
+            DriverId = driverId;
+            DriverName = driverName;
             UploadTimestamp = uploadTimestamp;
             _listItem = new List<PackingOrderItemModel>();
         }
@@ -74,6 +80,9 @@ namespace j07_btrade_sync.Model
             fakturCode: string.Empty,
             fakturDate: DateTime.MinValue,
             adminName: string.Empty,
+            grandTotal: 0,
+            driverId : string.Empty,
+            driverName: string.Empty,
             uploadTimestamp: new DateTime(3000,1,1),
             listItem: new List<PackingOrderItemModel>());
 

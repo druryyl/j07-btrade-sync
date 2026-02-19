@@ -45,7 +45,7 @@ namespace j07_btrade_sync.Repository
             dp.AddParam("@FakturCode", dto.FakturCode, SqlDbType.VarChar);
             dp.AddParam("@FakturDate", dto.FakturDate, SqlDbType.DateTime);
             dp.AddParam("@AdminName", dto.AdminName, SqlDbType.VarChar);
-            dp.AddParam("@GrandTotal", dto.GrandTotal, SqlDbType.VarChar);
+            dp.AddParam("@GrandTotal", dto.GrandTotal, SqlDbType.Decimal);
 
             dp.AddParam("@DriverId", dto.DriverId, SqlDbType.VarChar);
             dp.AddParam("@DriverName", dto.DriverName, SqlDbType.VarChar);
@@ -104,7 +104,7 @@ namespace j07_btrade_sync.Repository
             dp.AddParam("@FakturCode", dto.FakturCode, SqlDbType.VarChar);
             dp.AddParam("@FakturDate", dto.FakturDate, SqlDbType.DateTime);
             dp.AddParam("@AdminName", dto.AdminName, SqlDbType.VarChar);
-            dp.AddParam("@GrandTotal", dto.GrandTotal, SqlDbType.VarChar);
+            dp.AddParam("@GrandTotal", dto.GrandTotal, SqlDbType.Decimal);
 
             dp.AddParam("@DriverId", dto.DriverId, SqlDbType.VarChar);
             dp.AddParam("@DriverName", dto.DriverName, SqlDbType.VarChar);
